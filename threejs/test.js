@@ -59,7 +59,7 @@ function loadCubo(lado)
                 -semilado,-semilado,-semilado,  // 6
                 -semilado,-semilado, semilado   // 7 
                 ];
-  var colores =     [ 
+/*  var colores =     [ 
                 0xFF0000,   // 0
                 0xFF00FF,   // 1
                 0xFFFFFF,   // 2
@@ -68,6 +68,17 @@ function loadCubo(lado)
                 0x00FFFF,   // 5
                 0x0000FF,   // 6
                 0x000000    // 7
+                 ];*/
+
+  var colores =     [ 
+                0xFF0000,   // 0
+                0xFF0000,   // 1
+                0xFF0000,   // 2
+                0xFF0000,   // 3
+                0xFF0000,   // 4
+                0xFF0000,   // 5
+                0xFF0000,   // 6
+                0xFF0000    // 7
                  ];
   // Indica como enlazar los vertices para formar triangulos (12)
   var indices = [
