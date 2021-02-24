@@ -35,18 +35,18 @@ function init() {
 
 	// Camara
 	var aspectRatio = window.innerWidth/window.innerHeight;
-	camera = new THREE.PerspectiveCamera( 75, aspectRatio, 0.1, 100 );
-	camera.position.set( 0.5, 2, 5 );
-	camera.lookAt( new THREE.Vector3( 0,0,0 ) );
+	camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 100);
+	camera.position.set(0.5,2,5);
+	camera.lookAt(new THREE.Vector3(0, 0, 0));
 }
 
 function loadScene() {
-	// Construye el grafo de escena
+	// Construir el grafo de escena(DAG)
 	// - Objetos (geometria, material)
 	// - Transformaciones 
 	// - Organizar el grafo
 
-	// Objeto contenedor de cubo y esfera
+	// Contenedor de un cubo y una esfera
 	conjunto = new THREE.Object3D();
 	conjunto.position.y = 1;
 
@@ -61,7 +61,8 @@ function loadScene() {
 	var material = new THREE.MeshBasicMaterial( {color:'yellow', wireframe: true} );
 	esfera = new THREE.Mesh( geoEsfera, material );
 
-	// Suelo
+	
+	/*// Suelo
 	var geoSuelo = new THREE.PlaneGeometry(10,10,12,12);
 	var matSuelo = new THREE.MeshBasicMaterial( {color:'grey', wireframe: false} );
 	var suelo = new THREE.Mesh( geoSuelo, matSuelo );
@@ -107,8 +108,9 @@ function loadScene() {
 	scene.add( conjunto );
 	scene.add( new THREE.AxesHelper(3) );
 	scene.add( suelo );
+	*/
 }
-
+/*
 function update()
 {
 	// Cambiar propiedades entre frames
@@ -116,11 +118,11 @@ function update()
 	angulo += Math.PI/100;
 	esfera.rotation.y = angulo;
 	conjunto.rotation.y = angulo/10;
-}
-
+}*/
+/*
 function render() {
 	// Blucle de refresco
 	requestAnimationFrame( render );
 	update();
 	renderer.render( scene, camera );
-}
+}*/
