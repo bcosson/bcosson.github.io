@@ -1,20 +1,25 @@
 /*
-** Seminario #1: Grafo de escena 
-** @author: rvivo@upv.es
-** @date: 19-02-2020
+** Seminario #2: Grafo de escena 
 */
 
 // Variables globales estandar
 var renderer, scene, camera;
 
-// Otras variables
-var angulo =0 ;
-var esfera;
-var conjunto;
+// Objetos
+var esfera, cubo, conjunto;
 
+
+// Variables dependientes del tiempo
+var angulo=0;
+var antes=Date.now();
+
+
+// Acciones
 init();
 loadScene();
 render();
+
+
 
 function init() {
 	// Funcion de inicializacion de motor, escena y camara
