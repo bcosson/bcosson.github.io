@@ -57,9 +57,9 @@ function loadScene() {
 	cubo.position.x = 2;
 
 	// Esfera
-	var geoEsfera = new THREE.SphereGeometry( 1, 30, 30 );
-	var material = new THREE.MeshBasicMaterial( {color:'yellow', wireframe: true} );
-	esfera = new THREE.Mesh( geoEsfera, material );
+	var geoEsfera = new THREE.SphereGeometry(1, 30, 30);
+	var material = new THREE.MeshBasicMaterial({color:'yellow', wireframe: true});
+	esfera = new THREE.Mesh(geoEsfera, material);
 
 	
 	/*// Suelo
