@@ -1,5 +1,5 @@
 
-
+//console.log(`This is ==> ${aaa} `);
 
 var renderer, scene, camera;
 var cameraControls;
@@ -9,7 +9,8 @@ var cameraControls;
 
 var square_side=0.75;
 var Tiles=[[],[],[],[],[],[],[],[]];
-
+var Pieces={"whites":[],"blacks":[]};
+var objs=[];
 
 
 var pawn_move=[];
@@ -21,7 +22,7 @@ loadBoard();
 loadPieces();
 render();
 
-scene.add(new THREE.AxesHelper(3));
+//scene.add(new THREE.AxesHelper(3));
   
 
 //position.set(x=red,y=green,z=blue);
@@ -186,7 +187,6 @@ function loadBoard()
 
 function loadPieces()
 {
-
     var loader = new THREE.ObjectLoader();
 
                     ////   LIGHT    /////
@@ -206,7 +206,7 @@ function loadPieces()
     for (var k=0;k<2;k++){
         loader.load( 'models/Chess/rookW.json', 
         function (obj){
-                        obj.name = "rookW";
+                        
                         my_scale=0.2;
                         obj.scale.set(my_scale,my_scale,my_scale);
 
@@ -215,10 +215,15 @@ function loadPieces()
                         Tiles[0][total1]["Tile"].add(obj);
                         Tiles[0][total1]["is_on"] = "rookW";
                         total1=7;
+
+                        obj.name="rookw1";
+
+                        Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
                     });
         loader.load( 'models/Chess/rookB.json', 
         function (obj){
-                        obj.name = "rookB";
+                        
+
                         my_scale=0.2;
                         obj.scale.set(my_scale,my_scale,my_scale);
 
@@ -228,10 +233,13 @@ function loadPieces()
                         Tiles[7][total2]["Tile"].add(obj);
                         Tiles[7][total2]["is_on"] = "rookB";
                         total2=7;
+
+                        Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
                     });
 
     loader.load( 'models/Chess/knightB.json', 
     function (obj){
+                    
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -241,9 +249,12 @@ function loadPieces()
                     Tiles[7][total3]["Tile"].add(obj);
                     Tiles[7][total3]["is_on"] = "knightB";
                     total3=6;
+
+                    Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
                 });
     loader.load( 'models/Chess/knightW.json', 
     function (obj){
+                    
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -253,10 +264,13 @@ function loadPieces()
                     Tiles[0][total4]["Tile"].add(obj);
                     Tiles[0][total4]["is_on"] = "knightW";
                     total4=6;
+
+                    Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
                 });
 
     loader.load( 'models/Chess/bishopB.json', 
     function (obj){
+                    
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -266,10 +280,13 @@ function loadPieces()
                     Tiles[7][total5]["Tile"].add(obj);
                     Tiles[7][total5]["is_on"] = "bishopB";
                     total5=5;
+
+                    Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
                 });
                 
     loader.load( 'models/Chess/bishopW.json', 
     function (obj){
+                    
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -278,6 +295,8 @@ function loadPieces()
                     Tiles[0][total6]["Tile"].add(obj);
                     Tiles[0][total6]["is_on"] = "bishopW";
                     total6=5;
+
+                    Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
                 });
 
     }//end for(2)
@@ -287,6 +306,7 @@ function loadPieces()
                         ////  LOADING Queens, Kings      /////
     loader.load( 'models/Chess/queenB.json', 
     function (obj){
+                    
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -294,11 +314,14 @@ function loadPieces()
                     
                     Tiles[7][3]["Tile"].add(obj);
                     Tiles[7][3]["is_on"] = "queenB";
+
+                    Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
                     
                 });
 
     loader.load( 'models/Chess/queenW.json', 
     function (obj){
+                    
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -307,10 +330,13 @@ function loadPieces()
                     Tiles[0][3]["Tile"].add(obj);
                     Tiles[0][3]["is_on"] = "queenW";
                     
+                    Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                    
                 });
 
     loader.load( 'models/Chess/kingB.json', 
     function (obj){
+                    
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -318,11 +344,14 @@ function loadPieces()
                 
                     Tiles[7][4]["Tile"].add(obj);
                     Tiles[7][4]["is_on"] = "kingB";
+
+                    Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
                     
                 });
 
     loader.load( 'models/Chess/kingW.json', 
     function (obj){
+                    
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -330,6 +359,8 @@ function loadPieces()
                     
                     Tiles[0][4]["Tile"].add(obj);
                     Tiles[0][4]["is_on"] = "kingW";
+
+                    Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
                     
                 });
 
@@ -344,10 +375,10 @@ function loadPieces()
 
     for (var p=0;p<8;p++)
     {
-
+        console.log(`p = ${p} `);
         loader.load( 'models/Chess/pawnW.json', 
             function (obj){
-                            obj.name = "pawnW";
+                            
                             my_scale=0.2;
                             obj.scale.set(my_scale,my_scale,my_scale);
 
@@ -356,6 +387,10 @@ function loadPieces()
                             Tiles[1][zz1]["Tile"].add(obj);
                             Tiles[1][zz1]["is_on"] = "pawnW";
                             zz1++;
+
+                            objs.push(obj);
+                            Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                            
 
                                 pawn_move.push(new TWEEN.Tween(obj.position).
                                     to( {x: [0,obj.position.x + square_side/2,obj.position.x + square_side],
@@ -366,12 +401,12 @@ function loadPieces()
                                         //pawn_move[p].start();
                    
 
-
+                        console.log(`This is id = ${obj.id} `);
                         });
 
         loader.load( 'models/Chess/pawnB.json', 
             function (obj){
-                            obj.name = "rookW";
+                            
                             my_scale=0.2;
 
                             obj.scale.set(my_scale,my_scale,my_scale);
@@ -381,6 +416,10 @@ function loadPieces()
                             Tiles[6][zz2]["Tile"].add(obj);
                             Tiles[6][zz2]["is_on"] = "pawnB";
                             zz2++;
+
+                            objs.push(obj);
+                            Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                            console.log(`This is id = ${obj.id} `);
                         });
 
     }//end for(8)
@@ -427,11 +466,25 @@ function move(event) // ++++++++++++++++++++++++++++++++++++++++
 
     // Calcular interseccion con objetos de la escena
     var interseccion = rayo.intersectObjects(scene.children, true);
-    if( interseccion.length > 0){
+    if( interseccion.length > 0)
+    {
         // Ver si es el soldado
-        if(interseccion[0].object.name == 'board'){
+        var aaa=interseccion[0].object.name;
+        var bbb=interseccion[0].object.id;
+        var idas1=[],idas2=[];
+        for (var l=0;l<16;l++){idas1.push(Pieces["whites"][l]["id"]  );idas2.push(Pieces["blacks"][l]["id"]  );}
+        
+        console.log(`This is ==> ${aaa} et ${bbb} \n`);
+
+        console.log(`et \nWHITES : ${idas1} \n BLACKS : ${idas2}`); 
+        for (var l=0;l<15;l++){console.log(`${objs[l].id} \n`) ;}
+
+        //console.log(`This is ==> ${aaa} et ${bbb} et \nWHITES : ${idas1} \n BLACKS : ${idas2} `);
+        if(interseccion[0].object.name == "pawnW")
+        {
             //salto.chain(volver);
-            pawn_move[7].start();
+            //pawn_move[7].start();
+            Tiles[4][4]["Tile"].add(objs[2]);
         }
     }
 
