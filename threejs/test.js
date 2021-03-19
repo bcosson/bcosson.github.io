@@ -37,8 +37,8 @@ function init()
   camera = new THREE.PerspectiveCamera( 50, aspectRatio , 0.1, 100 );
   camera.position.set( 1, 1.5, 2 );
 
-  cameraControls = new THREE.OrbitControls( camera, renderer.domElement );
-  cameraControls.target.set( 0, 0, 0 );
+  cameraControls = new THREE.OrbitControls(camera, renderer.domElement);
+  cameraControls.target.set(0, 0, 0);
 
   window.addEventListener('resize', updateAspectRatio );
 }
@@ -59,7 +59,7 @@ function loadCubo(lado)
                 -semilado,-semilado,-semilado,  // 6
                 -semilado,-semilado, semilado   // 7 
                 ];
-  var colores =     [ 
+  /*var colores =     [ 
                 0xFF0000,   // 0
                 0xFF00FF,   // 1
                 0xFFFFFF,   // 2
@@ -69,6 +69,18 @@ function loadCubo(lado)
                 0x0000FF,   // 6
                 0x000000    // 7
                  ];
+*/
+  var c = 0x00FFFF;
+  var colores =     [ 
+                  c,   // 0
+                  c,   // 1
+                  c,   // 2
+                  c,   // 3
+                  c,   // 4
+                  c,   // 5
+                  c,   // 6
+                  c    // 7
+                   ];
 
   // Indica como enlazar los vertices para formar triangulos (12)
   var indices = [
@@ -127,7 +139,7 @@ function loadCubo(lado)
   }
 
   // Configura un material
-  var textura = new THREE.ImageUtils.loadTexture( 'images/ilovecg.png' );
+  var textura = new THREE.ImageUtils.loadTexture( 'images/Earth.jpg' );
   var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors, map: textura, side: THREE.DoubleSide } );
 
   // Construye el objeto grafico 
@@ -150,7 +162,7 @@ function update()
   cameraControls.update();
 
   // Movimiento propio del cubo
-	cubo.rotateOnAxis( new THREE.Vector3(0,1,0), angulo );
+	//cubo.rotateOnAxis( new THREE.Vector3(0,1,0), angulo );
 }
 
 function render()
