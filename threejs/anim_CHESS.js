@@ -5,12 +5,18 @@ var renderer, scene, camera;
 var cameraControls;
 
 
-
+var Showing=false;
 
 var square_side=0.75;
 var Tiles=[[],[],[],[],[],[],[],[]];
-var Pieces={"whites":[],"blacks":[]};
-var objs=[];
+
+//var Pieces_B={"pawns" : [],"rooks" : [],"knights" : [],"bishops" : [],"queen":[],"king":[] };
+//var Pieces_W={"pawns" : [],"rooks" : [],"knights" : [],"bishops" : [],"queen":[],"king":[] };
+var Pieces_B=[];
+var Pieces_W=[];
+
+var To_Move=[];
+var C_cubes=[];
 
 
 var pawn_move=[];
@@ -52,6 +58,7 @@ function init()
     window.addEventListener('resize', updateAspectRatio );
 
     renderer.domElement.addEventListener('dblclick',move);
+    //renderer.domElement.addEventListener('dblclick',confirm);
 }
 
 
@@ -206,6 +213,7 @@ function loadPieces()
     for (var k=0;k<2;k++){
         loader.load( 'models/Chess/rookW.json', 
         function (obj){
+                        obj.name="rookW";
                         
                         my_scale=0.2;
                         obj.scale.set(my_scale,my_scale,my_scale);
@@ -213,16 +221,17 @@ function loadPieces()
                         obj.position.set(0,0,-0.4);          
 
                         Tiles[0][total1]["Tile"].add(obj);
-                        Tiles[0][total1]["is_on"] = "rookW";
-                        total1=7;
+                        Tiles[0][total1]["is_on"] = obj.name;
+                        
 
-                        obj.name="rookw1";
+                        
 
-                        Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                        Pieces_W.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":0,"j":total1,"alive":true});
+                        total1=7;                    
                     });
         loader.load( 'models/Chess/rookB.json', 
         function (obj){
-                        
+                        obj.name="rookB";
 
                         my_scale=0.2;
                         obj.scale.set(my_scale,my_scale,my_scale);
@@ -232,13 +241,16 @@ function loadPieces()
 
                         Tiles[7][total2]["Tile"].add(obj);
                         Tiles[7][total2]["is_on"] = "rookB";
-                        total2=7;
+                        
 
-                        Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
+
+                        Pieces_B.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":7,"j":total2,"alive":true});
+                        total2=7;
                     });
 
     loader.load( 'models/Chess/knightB.json', 
-    function (obj){
+    function (obj){ 
+                    obj.name="knightB";
                     
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
@@ -248,13 +260,15 @@ function loadPieces()
                     
                     Tiles[7][total3]["Tile"].add(obj);
                     Tiles[7][total3]["is_on"] = "knightB";
+                    
+                    
+                    
+                    Pieces_B.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":7,"j":total3,"alive":true});
                     total3=6;
-
-                    Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
                 });
     loader.load( 'models/Chess/knightW.json', 
     function (obj){
-                    
+                    obj.name="knightW";
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -263,13 +277,16 @@ function loadPieces()
                     
                     Tiles[0][total4]["Tile"].add(obj);
                     Tiles[0][total4]["is_on"] = "knightW";
-                    total4=6;
+                    
 
-                    Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                    Pieces_W.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":0,"j":total4,"alive":true});
+
+                    total4=6;
                 });
 
     loader.load( 'models/Chess/bishopB.json', 
     function (obj){
+                    obj.name="bishopB";
                     
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
@@ -279,13 +296,16 @@ function loadPieces()
 
                     Tiles[7][total5]["Tile"].add(obj);
                     Tiles[7][total5]["is_on"] = "bishopB";
-                    total5=5;
+                    
 
-                    Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                    Pieces_B.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":7,"j":total5,"alive":true});
+                    total5=5;
                 });
                 
     loader.load( 'models/Chess/bishopW.json', 
     function (obj){
+
+                   obj.name="bishopW";
                     
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
@@ -294,9 +314,10 @@ function loadPieces()
                     
                     Tiles[0][total6]["Tile"].add(obj);
                     Tiles[0][total6]["is_on"] = "bishopW";
-                    total6=5;
+                    
 
-                    Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                    Pieces_W.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":0,"j":total6,"alive":true});
+                    total6=5;
                 });
 
     }//end for(2)
@@ -306,7 +327,9 @@ function loadPieces()
                         ////  LOADING Queens, Kings      /////
     loader.load( 'models/Chess/queenB.json', 
     function (obj){
-                    
+
+                    obj.name="queenB";
+
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -315,13 +338,13 @@ function loadPieces()
                     Tiles[7][3]["Tile"].add(obj);
                     Tiles[7][3]["is_on"] = "queenB";
 
-                    Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                    Pieces_B.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":7,"j":3,"alive":true});
                     
                 });
 
     loader.load( 'models/Chess/queenW.json', 
     function (obj){
-                    
+                    obj.name="queenW";
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -330,13 +353,13 @@ function loadPieces()
                     Tiles[0][3]["Tile"].add(obj);
                     Tiles[0][3]["is_on"] = "queenW";
                     
-                    Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                    Pieces_W.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":0,"j":3,"alive":true});
                     
                 });
 
     loader.load( 'models/Chess/kingB.json', 
     function (obj){
-                    
+                    obj.name="kingB";
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -345,13 +368,13 @@ function loadPieces()
                     Tiles[7][4]["Tile"].add(obj);
                     Tiles[7][4]["is_on"] = "kingB";
 
-                    Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                    Pieces_B.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":7,"j":4,"alive":true});
                     
                 });
 
     loader.load( 'models/Chess/kingW.json', 
     function (obj){
-                    
+                    obj.name="kingW";
                     my_scale=0.2;
                     obj.scale.set(my_scale,my_scale,my_scale);
                     
@@ -360,7 +383,7 @@ function loadPieces()
                     Tiles[0][4]["Tile"].add(obj);
                     Tiles[0][4]["is_on"] = "kingW";
 
-                    Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
+                    Pieces_W.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":0,"j":4,"alive":true});
                     
                 });
 
@@ -375,9 +398,9 @@ function loadPieces()
 
     for (var p=0;p<8;p++)
     {
-        console.log(`p = ${p} `);
         loader.load( 'models/Chess/pawnW.json', 
             function (obj){
+                            obj.name="pawnW";
                             
                             my_scale=0.2;
                             obj.scale.set(my_scale,my_scale,my_scale);
@@ -386,10 +409,10 @@ function loadPieces()
 
                             Tiles[1][zz1]["Tile"].add(obj);
                             Tiles[1][zz1]["is_on"] = "pawnW";
-                            zz1++;
+                            
 
-                            objs.push(obj);
-                            Pieces["whites"].push({"name":obj.name,"id" : obj.id,"alive":true});
+
+                            Pieces_W.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":1,"j":zz1,"alive":true});
                             
 
                                 pawn_move.push(new TWEEN.Tween(obj.position).
@@ -401,12 +424,12 @@ function loadPieces()
                                         //pawn_move[p].start();
                    
 
-                        console.log(`This is id = ${obj.id} `);
+                            zz1++;
                         });
 
         loader.load( 'models/Chess/pawnB.json', 
             function (obj){
-                            
+                           obj.name="pawnB";
                             my_scale=0.2;
 
                             obj.scale.set(my_scale,my_scale,my_scale);
@@ -415,17 +438,254 @@ function loadPieces()
 
                             Tiles[6][zz2]["Tile"].add(obj);
                             Tiles[6][zz2]["is_on"] = "pawnB";
-                            zz2++;
+                            
 
-                            objs.push(obj);
-                            Pieces["blacks"].push({"name":obj.name,"id" : obj.id,"alive":true});
-                            console.log(`This is id = ${obj.id} `);
+                            Pieces_B.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":6,"j":zz2,"alive":true});
+                            zz2++;
                         });
 
     }//end for(8)
 
 
 }//end loadPieces()
+
+
+
+
+
+
+function show_green_cubes(coords,old_x,old_y)
+{
+    for (var k=0;k<coords.length;k++)
+    {
+        //pawn["obj"].visible=false;
+        geometryC = new THREE.BoxGeometry(0.5, 0.05, 0.5 );
+        materialC = new THREE.MeshBasicMaterial( { color: 0x07892F } );
+        cube = new THREE.Mesh( geometryC, materialC );
+        //cube.rotation.x=(-Math.PI/2);
+        cube.position.y=0.1;
+        cube.name="confirmation_cube";
+        C_cubes.push({"id":cube.id,"i":coords[k][0],"j":coords[k][1],"old_i":old_x,"old_j":old_y,"cube":cube});
+            
+
+        Tiles[coords[k][0]][coords[k][1]]["Tile"].add( cube );
+    }
+    Showing=true;
+
+}
+
+
+function show_possible_moves(objeto)
+{
+    console.log(`In show_possible_moves \n ====== NAME <${objeto["obj"].name}> ======`);
+
+    Clear_green_cubes();
+
+    if (objeto["name"]=="pawnW"){pawnW_possible_moves(objeto);}
+
+    else if (objeto["name"]=="knightW") {if (Showing==false) knightW_possible_moves(objeto);}
+
+    else if (objeto["name"]=="kingW") {if (Showing==false) kingW_possible_moves(objeto);}
+
+    else if (objeto["name"]=="rookW") {if (Showing==false) rookW_possible_moves(objeto);}
+
+    else if (objeto["name"]=="bishopW") {if (Showing==false) bishopW_possible_moves(objeto);}
+
+    else if (objeto["name"]=="queenW") {if (Showing==false) queenW_possible_moves(objeto);}
+
+
+    else {Clear_green_cubes(); }
+
+
+
+}
+
+
+
+
+
+function pawnW_possible_moves(pawn)
+{
+
+    if (Showing==true ) { if (To_Move[0].id + 1 != pawn["id"]) Clear_green_cubes();}
+    var x=pawn["i"],y=pawn["j"];
+
+    var pos=[];
+    To_Move.push(pawn["obj"]);
+    console.log(`IN pawnW_possible_moves ID <${pawn["obj"].id}> AND NAME <${pawn["obj"].name}>`);
+
+    
+
+    if (Tiles[x+1][y]["is_on"]=="") pos.push([x+1,y]);
+    //if (Tiles[x+2][y]["is_on"]=="") pos.push([x+2,y]);
+
+
+    if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
+    else Clear_green_cubes();
+
+}
+
+function knightW_possible_moves(knight)
+{
+    if (Showing==true) { if (To_Move[0].id + 1 != knight["id"]) Clear_green_cubes();}
+    var x=knight["i"],y=knight["j"];
+    var pos=[];
+
+    To_Move.push(knight["obj"]);
+    console.log(`IN knightW_possible_moves ID <${knight["obj"].id} AND NAME <${knight["obj"].name}>`);
+
+
+
+    if (0<= x+2 && x+2 <=7 && 0<= y-1 && y-1 <=7) { if ( Tiles[x+2][y-1]["is_on"]=="") pos.push([x+2,y-1]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y-2 && y-2 <=7) {if ( Tiles[x+1][y-2]["is_on"]=="") pos.push([x+1,y-2]);}
+    if (0<= x+2 && x+2 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x+2][y+1]["is_on"]=="") pos.push([x+2,y+1]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y+2 && y+2 <=7) {if ( Tiles[x+1][y+2]["is_on"]=="") pos.push([x+1,y+2]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y+2 && y+2 <=7) {if ( Tiles[x-1][y+2]["is_on"]=="") pos.push([x-1,y+2]);}
+    if (0<= x-2 && x-2 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x-2][y+1]["is_on"]=="") pos.push([x-2,y+1]);}
+    if (0<= x-2 && x-2 <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x-2][y-1]["is_on"]=="") pos.push([x-2,y-1]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y-2 && y-2 <=7) {if ( Tiles[x-1][y-2]["is_on"]=="") pos.push([x-1,y-2]);}
+
+    
+    if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
+    else Clear_green_cubes();
+
+}
+
+function kingW_possible_moves(king)
+{
+    if (Showing==true) { if (To_Move[0].id + 1 != king["id"]) Clear_green_cubes();}
+    var x=king["i"],y=king["j"];
+    var pos=[];
+
+    To_Move.push(king["obj"]);
+    console.log(`IN kingW_possible_moves  ID <${king["obj"].id}> AND NAME <${king["obj"].name}>`);
+
+
+
+    if (0<= x+1 && x+1 <=7 && 0<= y-1 && y-1 <=7) { if ( Tiles[x+1][y-1]["is_on"]=="") pos.push([x+1,y-1]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y && y <=7) {if ( Tiles[x+1][y]["is_on"]=="") pos.push([x+1,y]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x+1][y+1]["is_on"]=="") pos.push([x+1,y+1]);}
+    if (0<= x && x <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x][y+1]["is_on"]=="") pos.push([x,y+1]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x-1][y+1]["is_on"]=="") pos.push([x-1,y+1]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y && y <=7) {if ( Tiles[x-1][y]["is_on"]=="") pos.push([x-1,y]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x-1][y-1]["is_on"]=="") pos.push([x-1,y-1]);}
+    if (0<= x && x <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x][y-1]["is_on"]=="") pos.push([x,y-1]);}
+
+
+    
+    if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
+    else Clear_green_cubes();
+
+}
+
+
+
+
+function rookW_possible_moves(rook)
+{
+    if (Showing==true) { if (To_Move[0].id + 1 != rook["id"]) Clear_green_cubes();}
+    var x=rook["i"],y=rook["j"];
+    var pos=[];
+
+    To_Move.push(rook["obj"]);
+    console.log(`IN rookW_possible_moves  ID <${rook["obj"].id}> AND NAME <${rook["obj"].name}>`);
+
+
+    var k1=x+1 ;
+    while(k1<=7 && Tiles[k1][y]["is_on"]=="") { pos.push([k1,y]); k1++;}
+
+    var k2=x-1 ;
+    while(k2>=0 && Tiles[k2][y]["is_on"]=="") {pos.push([k2,y]); k2--;}
+
+    var k3=y+1;
+    while(k3<=7 && Tiles[x][k3]["is_on"]=="") {pos.push([x,k3]); k3++;}
+
+    var k4=y-1 ;
+    while(k4>=0 && Tiles[x][k4]["is_on"]=="") {pos.push([x,k4]); k4--;}
+
+
+
+    if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
+    else Clear_green_cubes();
+
+}
+
+
+function bishopW_possible_moves(bishop)
+{
+    if (Showing==true) { if (To_Move[0].id + 1 != bishop["id"]) Clear_green_cubes();}
+    var x=bishop["i"],y=bishop["j"];
+    var pos=[];
+
+    To_Move.push(bishop["obj"]);
+    console.log(`IN bishopW_possible_moves  ID <${bishop["obj"].id}> AND NAME <${bishop["obj"].name}>`);
+
+
+    var k1=x+1,k2=y+1;
+    while(k1<=7 && k2<=7 && Tiles[k1][k2]["is_on"]=="") { pos.push([k1,k2]); k1++;k2++;}
+
+    var k3=x-1,k4=y+1;
+    while(k3>=0 && k4<=7 && Tiles[k3][k4]["is_on"]=="") { pos.push([k3,k4]); k3--;k4++;}
+
+    var k5=x-1,k6=y-1;
+    while(k5>=0 && k6>=0 && Tiles[k5][k6]["is_on"]=="") { pos.push([k5,k6]); k5--;k6--;}
+
+    var k7=x+1,k8=y-1;
+    while(k7<=7 && k8>=0 && Tiles[k7][k8]["is_on"]=="") { pos.push([k7,k8]); k7++;k8--;}
+    
+
+
+
+    if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
+    else Clear_green_cubes();
+
+}
+
+function queenW_possible_moves(queen)
+{
+    if (Showing==true) { if (To_Move[0].id + 1 != queen["id"]) Clear_green_cubes();}
+    var x=queen["i"],y=queen["j"];
+    var pos=[];
+
+    To_Move.push(queen["obj"]);
+    console.log(`IN queenW_possible_moves  ID <${queen["obj"].id}> AND NAME <${queen["obj"].name}>`);
+
+
+    var k1=x+1,k2=y+1;
+    while(k1<=7 && k2<=7 && Tiles[k1][k2]["is_on"]=="") { pos.push([k1,k2]); k1++;k2++;}
+
+    var k3=x-1,k4=y+1;
+    while(k3>=0 && k4<=7 && Tiles[k3][k4]["is_on"]=="") { pos.push([k3,k4]); k3--;k4++;}
+
+    var k5=x-1,k6=y-1;
+    while(k5>=0 && k6>=0 && Tiles[k5][k6]["is_on"]=="") { pos.push([k5,k6]); k5--;k6--;}
+
+    var k7=x+1,k8=y-1;
+    while(k7<=7 && k8>=0 && Tiles[k7][k8]["is_on"]=="") { pos.push([k7,k8]); k7++;k8--;}
+
+
+    
+
+    var k9=x+1 ;
+    while(k9<=7 && Tiles[k9][y]["is_on"]=="") { pos.push([k9,y]); k9++;}
+
+    var k10=x-1 ;
+    while(k10>=0 && Tiles[k10][y]["is_on"]=="") {pos.push([k10,y]); k10--;}
+
+    var k11=y+1;
+    while(k11<=7 && Tiles[x][k11]["is_on"]=="") {pos.push([x,k11]); k11++;}
+
+    var k12=y-1 ;
+    while(k12>=0 && Tiles[x][k12]["is_on"]=="") {pos.push([x,k12]); k12--;}
+
+
+
+    if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
+    else Clear_green_cubes();
+
+}
+
+
 
 
 
@@ -445,50 +705,148 @@ function update()
 	//cubo.rotateOnAxis( new THREE.Vector3(0,1,0), angulo );
 }
 
+
+
+/*
+function confirm(event) // ++++++++++++++++++++++++++++++++++++++++
+{
+    if (Showing==true)
+    {
+        var x = event.clientX;
+        var y = event.clientY;
+
+        x = x * 2/window.innerWidth - 1;
+        y = -y * 2/window.innerHeight + 1;
+
+        var rayo = new THREE.Raycaster();
+        rayo.setFromCamera( new THREE.Vector2(x,y), camera);
+
+        var interseccion = rayo.intersectObjects(scene.children, true);
+        if( interseccion.length > 0)
+        {
+            
+
+            
+            
+        }
+    }
+}*/
+
+
+
+
+
 function move(event) // ++++++++++++++++++++++++++++++++++++++++
 {
-    // Callback de atencion al doble click
-
-    // Localizar la posicion del doble click en coordenadas de ventana
     var x = event.clientX;
     var y = event.clientY;
 
-    
-    
-    // Normalizar al espacio de 2x2 centrado
     x = x * 2/window.innerWidth - 1;
     y = -y * 2/window.innerHeight + 1;
 
-
-    // Construir el rayo que pasa por el punto de vista y el punto x,y
     var rayo = new THREE.Raycaster();
     rayo.setFromCamera( new THREE.Vector2(x,y), camera);
 
-    // Calcular interseccion con objetos de la escena
     var interseccion = rayo.intersectObjects(scene.children, true);
-    if( interseccion.length > 0)
+
+
+
+    if( interseccion.length > 0 )
     {
-        // Ver si es el soldado
-        var aaa=interseccion[0].object.name;
-        var bbb=interseccion[0].object.id;
-        var idas1=[],idas2=[];
-        for (var l=0;l<16;l++){idas1.push(Pieces["whites"][l]["id"]  );idas2.push(Pieces["blacks"][l]["id"]  );}
-        
-        console.log(`This is ==> ${aaa} et ${bbb} \n`);
+        console.log(`In move object NAME <${interseccion[0].object.name}>`);
 
-        console.log(`et \nWHITES : ${idas1} \n BLACKS : ${idas2}`); 
-        for (var l=0;l<15;l++){console.log(`${objs[l].id} \n`) ;}
 
-        //console.log(`This is ==> ${aaa} et ${bbb} et \nWHITES : ${idas1} \n BLACKS : ${idas2} `);
-        if(interseccion[0].object.name == "pawnW")
+
+        console.log(`SHOWING BEFORE CONFIRM <${Showing}>`);
+        if(Showing==true && interseccion[0].object.name == "confirmation_cube")
         {
-            //salto.chain(volver);
-            //pawn_move[7].start();
-            Tiles[4][4]["Tile"].add(objs[2]);
+            console.log(`IN CONFIRMATION AND NAME <${interseccion[0].object.name}>`);
+            for (var s=0;s<C_cubes.length;s++)
+            {
+                if (interseccion[0].object.id == C_cubes[s]["id"])
+                {
+                    var x =C_cubes[s]["i"];
+                    var y = C_cubes[s]["j"];
+                    Tiles[x][y]["Tile"].add(To_Move[0]);
+                    Tiles[x][y]["is_on"]=To_Move[0].name;
+
+                    Tiles[C_cubes[s]["old_i"]][C_cubes[s]["old_j"]]["is_on"]="";
+
+                    for(var k=0;k<Pieces_W.length;k++) 
+                    {
+                        if (Pieces_W[k]["id"] == To_Move[0].id+1) {Pieces_W[k]["i"]=x;Pieces_W[k]["j"]=y;}   
+                    }
+                }
+            }
+
+            Clear_green_cubes();
+
         }
+        
+        else if (interseccion[0].object.name != "")
+        {
+            //var aaa=interseccion[0].object.name;
+            var bbb=interseccion[0].object.id;
+            //var idas1,idas2;
+
+            for (var l=0;l<Pieces_W.length;l++)
+            {
+                if (Pieces_W[l]["id"]==bbb)
+                {
+                    //idas1=Pieces_W[l]["name"];
+                    //idas2=Pieces_W[l]["id"];
+                    obj3D=Pieces_W[l];
+                    //console.log(`\nThis is ==> ${aaa} et ${bbb} et \n   NAME_W : ${idas1} et ${idas2}\n______________________ `);
+                }
+                else if (Pieces_B[l]["id"]==bbb)
+                {
+                    //idas1=Pieces_B[l]["name"];
+                    //idas2=Pieces_B[l]["id"];
+                    obj3D=Pieces_B[l];
+                    //console.log(`\nThis is ==> ${aaa} et ${bbb} et \n   NAME_B : ${idas1} et ${idas2}\n______________________ `);
+                }
+            } 
+
+            show_possible_moves(obj3D);
+        }
+
+    }// end --> if interseccion.length > 0
+console.log(`\n++++++++++++++++\n\n`);
+}
+
+function Clear_green_cubes()
+{
+    console.log(`In  Clear_green_cubes() SHOWING <${Showing}>`);
+    for (var s=0;s<C_cubes.length;s++) 
+    {
+    Tiles[C_cubes[s]['i']][C_cubes[s]['j']]["Tile"].remove(C_cubes[s]['cube']);
     }
 
+
+    for (var s=0;s<=C_cubes.length;s++) C_cubes.pop();
+    for (var s=0;s<=To_Move.length;s++) To_Move.pop();
+
+
+    //C_cubes=[];
+    while (To_Move.length!=0 ) To_Move.pop();
+    while (C_cubes.length!=0 ) C_cubes.pop();
+
+    //console.log(` To_Move.length ${To_Move.length} C_cubes.length ${C_cubes.length}`);
+
+    Showing=false;
+
 }
+
+
+
+
+
+
+
+
+
+
+
 
 function render()
 {
