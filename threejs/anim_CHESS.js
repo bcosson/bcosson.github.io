@@ -1,6 +1,16 @@
 
 //console.log(`This is ==> ${aaa} `);
 
+
+//a faire:
+//lights
+//minimap
+//manger
+//fond d ecran
+//bordure plateau
+//changer couleur pions noirs et dales
+//minimap
+
 var renderer, scene, camera;
 var cameraControls;
 
@@ -414,14 +424,6 @@ function loadPieces()
 
                             Pieces_W.push({"obj":obj,"name":obj.name,"id" : obj.id+1,"i":1,"j":zz1,"alive":true});
                             
-
-                                pawn_move.push(new TWEEN.Tween(obj.position).
-                                    to( {x: [0,obj.position.x + square_side/2,obj.position.x + square_side],
-                                        y: [0,1,0],
-                                        z: [0,0,0]}, 1000));
-                                        //pawn_move.easing( TWEEN.Easing.Bounce.Out );
-                                        //pawn_move[p].interpolation( TWEEN.Interpolation.Bezier );
-                                        //pawn_move[p].start();
                    
 
                             zz1++;
@@ -481,17 +483,19 @@ function show_possible_moves(objeto)
 
     Clear_green_cubes();
 
-    if (objeto["name"]=="pawnW"){pawnW_possible_moves(objeto);}
+    if (objeto["name"]=="pawnW" ){pawnW_possible_moves(objeto);}
 
-    else if (objeto["name"]=="knightW") {if (Showing==false) knightW_possible_moves(objeto);}
+    else if (objeto["name"]=="pawnB") {if (Showing==false) pawnB_possible_moves(objeto);}
 
-    else if (objeto["name"]=="kingW") {if (Showing==false) kingW_possible_moves(objeto);}
+    else if (objeto["name"].includes("knight")) {if (Showing==false) knightW_possible_moves(objeto);}
 
-    else if (objeto["name"]=="rookW") {if (Showing==false) rookW_possible_moves(objeto);}
+    else if (objeto["name"].includes("king")) {if (Showing==false) kingW_possible_moves(objeto);}
 
-    else if (objeto["name"]=="bishopW") {if (Showing==false) bishopW_possible_moves(objeto);}
+    else if (objeto["name"].includes("rook")) {if (Showing==false) rookW_possible_moves(objeto);}
 
-    else if (objeto["name"]=="queenW") {if (Showing==false) queenW_possible_moves(objeto);}
+    else if (objeto["name"].includes("bishop")) {if (Showing==false) bishopW_possible_moves(objeto);}
+
+    else if (objeto["name"].includes("queen")) {if (Showing==false) queenW_possible_moves(objeto);}
 
 
     else {Clear_green_cubes(); }
@@ -502,7 +506,28 @@ function show_possible_moves(objeto)
 
 
 
+function pawnB_possible_moves(pawn)
+{
 
+    if (Showing==true ) { if (To_Move[0].id + 1 != pawn["id"]) Clear_green_cubes();}
+    var x=pawn["i"],y=pawn["j"];
+
+    var pos=[];
+    To_Move.push(pawn["obj"]);
+    console.log(`IN pawnB_possible_moves ID <${pawn["obj"].id}> AND NAME <${pawn["obj"].name}>`);
+
+    
+    console.log(` Tiles[x-1][y]["is_on"]<${Tiles[x-1][y]["is_on"]}>`);
+    if (x-1 >=0 && Tiles[x-1][y]["is_on"]=="") pos.push([x-1,y]);
+    //if (Tiles[x+2][y]["is_on"]=="") pos.push([x+2,y]);
+
+
+    if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
+    else Clear_green_cubes();
+
+    console.log(` pawn["i"]<${pawn["i"]}>  pawn["j"]<${pawn["j"]}>`);
+
+}
 
 function pawnW_possible_moves(pawn)
 {
@@ -516,12 +541,14 @@ function pawnW_possible_moves(pawn)
 
     
 
-    if (Tiles[x+1][y]["is_on"]=="") pos.push([x+1,y]);
+    if (x+1<=7 && Tiles[x+1][y]["is_on"]=="") pos.push([x+1,y]);
     //if (Tiles[x+2][y]["is_on"]=="") pos.push([x+2,y]);
 
 
     if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
     else Clear_green_cubes();
+
+    console.log(` pawn["i"]<${pawn["i"]}>  pawn["j"]<${pawn["j"]}>`);
 
 }
 
@@ -700,7 +727,6 @@ function update()
 {
     // Cambios para actualizar la camara segun mvto del raton
     cameraControls.update();
-    TWEEN.update();
     // Movimiento propio del cubo
 	//cubo.rotateOnAxis( new THREE.Vector3(0,1,0), angulo );
 }
@@ -774,7 +800,8 @@ function move(event) // ++++++++++++++++++++++++++++++++++++++++
 
                     for(var k=0;k<Pieces_W.length;k++) 
                     {
-                        if (Pieces_W[k]["id"] == To_Move[0].id+1) {Pieces_W[k]["i"]=x;Pieces_W[k]["j"]=y;}   
+                        if (Pieces_W[k]["id"] == To_Move[0].id+1) {Pieces_W[k]["i"]=x;Pieces_W[k]["j"]=y;}
+                        else if (Pieces_B[k]["id"] == To_Move[0].id+1) {Pieces_B[k]["i"]=x;Pieces_B[k]["j"]=y;}    
                     }
                 }
             }
