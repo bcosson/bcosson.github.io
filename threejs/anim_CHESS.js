@@ -1,12 +1,3 @@
-
-//console.log(`This is ==> ${aaa} `);
-
-
-//a faire:
-//manger
-// annimacion
-
-
 var renderer, scene, camera,minicam;
 var cameraControls, effectControls;
 
@@ -30,12 +21,6 @@ var material_bar;
 var spot ;
 
 
-
-geometry_bar1=new THREE.BoxGeometry(square_side*9.195,0.1,0.45);
-material_bar1 = new THREE.MeshPhongMaterial( {color: 0x000000} );
-
-bar = new THREE.Mesh(geometry_bar1, material_bar1);
-bar.position.set(0,-2,0);
 
 
 
@@ -70,7 +55,6 @@ function init()
     document.getElementById('container').appendChild( renderer.domElement );
 
     scene = new THREE.Scene();
-    scene.add(bar);
 
     var aspectRatio = window.innerWidth / window.innerHeight;
     camera = new THREE.PerspectiveCamera( 75, aspectRatio , 0.1, 100 );
@@ -632,15 +616,8 @@ function show_green_cubes(coords,old_x,old_y)
         var json_data={"id":cube.id,
                         "i":coords[k][0] , "j":coords[k][1],
                         "old_i":old_x , "old_j":old_y,
-                        "cube":cube,
-                        "is_on":""};
-        if (Tiles[coords[k][0]][coords[k][1]]["is_on"]!="")
-        {                      
-        
-            json_data["is_on"]=Tiles[coords[k][0]][coords[k][1]]["is_on"];
-                
-            json_data["obj_on"] =Tiles[coords[k][0]][coords[k][1]]["obj"];
-        }
+                        "cube":cube};
+
         
 
         Green_Tiles.push(json_data);
@@ -655,7 +632,6 @@ function show_green_cubes(coords,old_x,old_y)
 
 function show_possible_moves(objeto)
 {
-    console.log(`In show_possible_moves \n ====== NAME <${objeto["obj"].name}> ======`);
 
     Clear_green_cubes();
 
@@ -689,14 +665,13 @@ function pawnB_possible_moves(pawn)
 
     var pos=[];
     To_Move.push(pawn["obj"]);
-    console.log(`IN pawnB_possible_moves ID <${pawn["obj"].id}> AND NAME <${pawn["obj"].name}>`);
 
     
 
     if (x-1 >=0 && Tiles[x-1][y]["is_on"]=="" ) pos.push([x-1,y]);
 
-    if (x-1 >=0 && y-1 >=0 && Tiles[x-1][y-1]["is_on"].includes("W")) pos.push([x-1,y-1]);
-    if (x-1 >=0 && y+1 <=7 && Tiles[x-1][y+1]["is_on"].includes("W")) pos.push([x-1,y+1]);
+    // if (x-1 >=0 && y-1 >=0 && Tiles[x-1][y-1]["is_on"].includes("W")) pos.push([x-1,y-1]);
+    // if (x-1 >=0 && y+1 <=7 && Tiles[x-1][y+1]["is_on"].includes("W")) pos.push([x-1,y+1]);
     //if (Tiles[x+2][y]["is_on"]=="") pos.push([x+2,y]);
 
 
@@ -714,11 +689,14 @@ function pawnW_possible_moves(pawn)
 
     var pos=[];
     To_Move.push(pawn["obj"]);
-    console.log(`IN pawnW_possible_moves ID <${pawn["obj"].id}> AND NAME <${pawn["obj"].name}>`);
 
     
 
     if (x+1<=7 && Tiles[x+1][y]["is_on"]=="") pos.push([x+1,y]);
+
+    
+    // if (x+1 >=0 && y-1 >=0 && Tiles[x+1][y-1]["is_on"].includes("B")) pos.push([x+1,y-1]);
+    // if (x+1 >=0 && y+1 <=7 && Tiles[x+1][y+1]["is_on"].includes("B")) pos.push([x+1,y+1]);
     //if (Tiles[x+2][y]["is_on"]=="") pos.push([x+2,y]);
 
 
@@ -734,18 +712,17 @@ function knightW_possible_moves(knight)
     var pos=[];
 
     To_Move.push(knight["obj"]);
-    console.log(`IN knightW_possible_moves ID <${knight["obj"].id} AND NAME <${knight["obj"].name}>`);
 
 
 
-    if (0<= x+2 && x+2 <=7 && 0<= y-1 && y-1 <=7) { if ( Tiles[x+2][y-1]["is_on"]=="") pos.push([x+2,y-1]);}
-    if (0<= x+1 && x+1 <=7 && 0<= y-2 && y-2 <=7) {if ( Tiles[x+1][y-2]["is_on"]=="") pos.push([x+1,y-2]);}
-    if (0<= x+2 && x+2 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x+2][y+1]["is_on"]=="") pos.push([x+2,y+1]);}
-    if (0<= x+1 && x+1 <=7 && 0<= y+2 && y+2 <=7) {if ( Tiles[x+1][y+2]["is_on"]=="") pos.push([x+1,y+2]);}
-    if (0<= x-1 && x-1 <=7 && 0<= y+2 && y+2 <=7) {if ( Tiles[x-1][y+2]["is_on"]=="") pos.push([x-1,y+2]);}
-    if (0<= x-2 && x-2 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x-2][y+1]["is_on"]=="") pos.push([x-2,y+1]);}
-    if (0<= x-2 && x-2 <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x-2][y-1]["is_on"]=="") pos.push([x-2,y-1]);}
-    if (0<= x-1 && x-1 <=7 && 0<= y-2 && y-2 <=7) {if ( Tiles[x-1][y-2]["is_on"]=="") pos.push([x-1,y-2]);}
+    if (0<= x+2 && x+2 <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x+2][y-1]["is_on"]=="") pos.push([x+2,y-1]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y-2 && y-2 <=7) {if ( Tiles[x+1][y-2]["is_on"]=="" ) pos.push([x+1,y-2]);}
+    if (0<= x+2 && x+2 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x+2][y+1]["is_on"]=="" ) pos.push([x+2,y+1]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y+2 && y+2 <=7) {if ( Tiles[x+1][y+2]["is_on"]=="" ) pos.push([x+1,y+2]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y+2 && y+2 <=7) {if ( Tiles[x-1][y+2]["is_on"]=="" ) pos.push([x-1,y+2]);}
+    if (0<= x-2 && x-2 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x-2][y+1]["is_on"]=="" ) pos.push([x-2,y+1]);}
+    if (0<= x-2 && x-2 <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x-2][y-1]["is_on"]=="" ) pos.push([x-2,y-1]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y-2 && y-2 <=7) {if ( Tiles[x-1][y-2]["is_on"]=="" ) pos.push([x-1,y-2]);}
 
     
     if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
@@ -760,18 +737,17 @@ function kingW_possible_moves(king)
     var pos=[];
 
     To_Move.push(king["obj"]);
-    console.log(`IN kingW_possible_moves  ID <${king["obj"].id}> AND NAME <${king["obj"].name}>`);
 
 
 
-    if (0<= x+1 && x+1 <=7 && 0<= y-1 && y-1 <=7) { if ( Tiles[x+1][y-1]["is_on"]=="") pos.push([x+1,y-1]);}
-    if (0<= x+1 && x+1 <=7 && 0<= y && y <=7) {if ( Tiles[x+1][y]["is_on"]=="") pos.push([x+1,y]);}
-    if (0<= x+1 && x+1 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x+1][y+1]["is_on"]=="") pos.push([x+1,y+1]);}
-    if (0<= x && x <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x][y+1]["is_on"]=="") pos.push([x,y+1]);}
-    if (0<= x-1 && x-1 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x-1][y+1]["is_on"]=="") pos.push([x-1,y+1]);}
-    if (0<= x-1 && x-1 <=7 && 0<= y && y <=7) {if ( Tiles[x-1][y]["is_on"]=="") pos.push([x-1,y]);}
-    if (0<= x-1 && x-1 <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x-1][y-1]["is_on"]=="") pos.push([x-1,y-1]);}
-    if (0<= x && x <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x][y-1]["is_on"]=="") pos.push([x,y-1]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y-1 && y-1 <=7) { if ( Tiles[x+1][y-1]["is_on"]=="" ) pos.push([x+1,y-1]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y && y <=7) {if ( Tiles[x+1][y]["is_on"]=="" ) pos.push([x+1,y]);}
+    if (0<= x+1 && x+1 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x+1][y+1]["is_on"]=="" ) pos.push([x+1,y+1]);}
+    if (0<= x && x <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x][y+1]["is_on"]=="" ) pos.push([x,y+1]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y+1 && y+1 <=7) {if ( Tiles[x-1][y+1]["is_on"]=="" ) pos.push([x-1,y+1]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y && y <=7) {if ( Tiles[x-1][y]["is_on"]=="" ) pos.push([x-1,y]);}
+    if (0<= x-1 && x-1 <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x-1][y-1]["is_on"]=="" ) pos.push([x-1,y-1]);}
+    if (0<= x && x <=7 && 0<= y-1 && y-1 <=7) {if ( Tiles[x][y-1]["is_on"]=="" ) pos.push([x,y-1]);}
 
 
     
@@ -790,7 +766,6 @@ function rookW_possible_moves(rook)
     var pos=[];
 
     To_Move.push(rook["obj"]);
-    console.log(`IN rookW_possible_moves  ID <${rook["obj"].id}> AND NAME <${rook["obj"].name}>`);
 
 
     var k1=x+1 ;
@@ -806,7 +781,6 @@ function rookW_possible_moves(rook)
     while(k4>=0 && Tiles[x][k4]["is_on"]=="") {pos.push([x,k4]); k4--;}
 
 
-
     if (pos.length>0){ show_green_cubes(pos,x,y); pos=[];}
     else Clear_green_cubes();
 
@@ -820,7 +794,6 @@ function bishopW_possible_moves(bishop)
     var pos=[];
 
     To_Move.push(bishop["obj"]);
-    console.log(`IN bishopW_possible_moves  ID <${bishop["obj"].id}> AND NAME <${bishop["obj"].name}>`);
 
 
     var k1=x+1,k2=y+1;
@@ -850,7 +823,6 @@ function queenW_possible_moves(queen)
     var pos=[];
 
     To_Move.push(queen["obj"]);
-    console.log(`IN queenW_possible_moves  ID <${queen["obj"].id}> AND NAME <${queen["obj"].name}>`);
 
 
     var k1=x+1,k2=y+1;
@@ -915,31 +887,16 @@ function move(event)
 
     if( interseccion.length > 0 )
     {
-        console.log(`In move object NAME <${interseccion[0].object.name}>`);
-
 
 
         if(Showing==true && interseccion[0].object.name == "confirmation_cube")
         {
-            console.log(`IN CONFIRMATION : NAME <${interseccion[0].object.name}>`);
             for (var s=0;s<Green_Tiles.length;s++)
             {
                 if (interseccion[0].object.id == Green_Tiles[s]["id"])
                 {
                     var x =Green_Tiles[s]["i"];
                     var y = Green_Tiles[s]["j"];
-
-                    if (Green_Tiles[s]["is_on"] != "")
-                    {
-                        bar.add(Green_Tiles[s]["obj_on"]);
-
-                        for(var k=0;k<Pieces_W.length;k++) 
-                        {
-                            if (Pieces_W[k]["id"] == Green_Tiles[s]["obj_on"].id + 1) {Pieces_W[k]["i"]=10;Pieces_W[k]["j"]=10;}
-                            else if (Pieces_B[k]["id"] == Green_Tiles[s]["obj_on"].id + 1) {Pieces_B[k]["i"]=10;Pieces_B[k]["j"]=10;}    
-                        }
-                    }
-
 
 
                     Tiles[x][y]["Tile"].add(To_Move[0]);
@@ -964,8 +921,9 @@ function move(event)
         else if (interseccion[0].object.name != "")
         {
             //var object_name=interseccion[0].object.name;
-            var object_id=interseccion[0].object.id;
             //var idas1,idas2;
+
+            var object_id=interseccion[0].object.id;
 
             for (var l=0;l<Pieces_W.length;l++)
             {
@@ -989,7 +947,7 @@ function move(event)
         }
 
     }// end --> if interseccion.length > 0
-console.log(`\n++++++++++++++++++++++++\n\n`);
+
 
 }
 
@@ -1010,9 +968,6 @@ function Clear_green_cubes()
     while (Green_Tiles.length!=0 ) Green_Tiles.pop();
     while (To_Move.length!=0 ) To_Move.pop();
 
-    
-
-    //console.log(` To_Move.length ${To_Move.length} Green_Tiles.length ${Green_Tiles.length}`);
 
     Showing=false;
 
