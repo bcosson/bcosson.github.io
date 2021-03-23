@@ -143,7 +143,9 @@ function loadCubo(lado)
   var material = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors, map: textura, side: THREE.DoubleSide } );
 
   // Construye el objeto grafico 
-  cubo = new THREE.Mesh( malla, material );
+
+  var geoEsfera1 = new THREE.SphereGeometry(5, 50, 100);
+  cubo = new THREE.Mesh( geoEsfera1, material );
 
 	// Añade el objeto grafico a la escena
 	scene.add( cubo );
